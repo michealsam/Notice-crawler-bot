@@ -11,3 +11,8 @@
 - /topfive - fetches the top 5 notices from the website.
 - /subscribe - Make user subscribe the notification for notice update.
 - /unsubscribe - unsubscribe the user if user is subscribed.
+
+# 🖼 Screenshots
+> ![commands](https://raw.githubusercontent.com/michealsam/Notice-crawler-bot/main/res/1.png)
+
+> ![demo](https://raw.githubusercontent.com/michealsam/Notice-crawler-bot/main/res/2.png)
