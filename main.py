@@ -99,7 +99,7 @@ def main() -> None:
 
     job_queue = application.job_queue
 
-    job_minute = job_queue.run_repeating(callback_minute, interval = 15, first = 15)
+    job_minute = job_queue.run_repeating(callback_minute, interval = 120, first = 15)
 
     # Adding different handlers to handle different commands given to bot
     application.add_handler(CommandHandler("start", start))
