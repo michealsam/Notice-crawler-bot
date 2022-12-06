@@ -22,11 +22,14 @@ previous = WEBSITE.scrape('nav menu menu-treemenu')
 def checkupdate():
     global previous
     new = WEBSITE.scrape('nav menu menu-treemenu')
-    if previous != new:
-        previous_first_key = list(previous.keys())[0]
-        indexof_previous_key = list(new.keys()).index(previous_first_key)
-        previous = new
-        return dict(list(new.items())[:indexof_previous_key])
+    if new:
+        if previous != new:
+            previous_first_key = list(previous.keys())[0]
+            indexof_previous_key = list(new.keys()).index(previous_first_key)
+            previous = new
+            return dict(list(new.items())[:indexof_previous_key])
+        else:
+            return None
     else:
         return None
 
@@ -46,7 +49,7 @@ def text_decorator(func):
     async def text_formater(update, context):
         notices = await func(update, context)
         if notices:
-            text = '📑Notices:\n' + '\n\n'.join(str(x) + " " + notices[x] for x in notices)
+            text = '📑Notices:\n\n' + '\n\n'.join(str(x) + " " + notices[x] for x in notices)
         else:
             text = "Some error"
         try:
@@ -85,10 +88,11 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def callback_minute( context: ContextTypes.DEFAULT_TYPE):
     global user_list
-    Website_update = checkupdate()
-    if Website_update:
-        for i in user_list:
-            await context.bot.send_message(chat_id = i, text = '🟢Updates from website:\n\n' + '\n\n'.join(str(x) + " " + Website_update[x] for x in Website_update))
+    if previous:
+        Website_update = checkupdate()
+        if Website_update:
+            for i in user_list:
+                await context.bot.send_message(chat_id = i, text = '🟢Updates from website:\n\n' + '\n\n'.join(str(x) + " " + Website_update[x] for x in Website_update))
 
 def main() -> None:
     """start the bot."""
@@ -99,7 +103,7 @@ def main() -> None:
 
     job_queue = application.job_queue
 
-    job_minute = job_queue.run_repeating(callback_minute, interval = 120, first = 15)
+    job_minute = job_queue.run_repeating(callback_minute, interval = 120, first = 20)
 
     # Adding different handlers to handle different commands given to bot
     application.add_handler(CommandHandler("start", start))
