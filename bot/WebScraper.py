@@ -10,16 +10,19 @@ class Webscraper:
     
     def __init__(self, url):
         self.url = url
-        self.website = requests.get(self.url, headers = headers)
-        self.soup = BeautifulSoup(self.website.content, 'html.parser')
-
+     
     def status(self) -> int:
         """ retuns the status of the website """
+        self.website = requests.get(self.url, headers = headers)
         return self.website.status_code
     
     def scrape(self,class_) -> dict:
         """ scrape the website drop-down list as per 'id' """
-        s = self.soup.find('ul', class_ = class_) # nav menu menu-treemenu
-        _s = s.find_all('a',href = True)
-        return {a.find('span').text: self.url+a['href'] if not re.search(r"((http(s)?:\/\/))",a['href']) else a['href'] for a in _s if a.find('span')}
+        if self.status()==200:
+            self.soup = BeautifulSoup(self.website.content, 'html.parser')
+            s = self.soup.find('ul', class_ = class_) # nav menu menu-treemenu
+            _s = s.find_all('a',href = True)
+            return {a.find('span').text: self.url+a['href'] if not re.search(r"((http(s)?:\/\/))",a['href']) else a['href'] for a in _s if a.find('span')}
+        else:
+            return None
 
